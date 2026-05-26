@@ -1,7 +1,8 @@
 (ns htmx-app.commands.item
   (:require [htmx-app.services.todo-list :as list-svc]
             [htmx-app.services.todo-item :as item-svc]
-            [htmx-app.commands.pipeline  :as pipe]))
+            [htmx-app.commands.pipeline  :as pipe]
+            [malli.core                  :as m]))
 
 (defn add-item! [ds list-id user-id title]
   (-> (list-svc/find-by-id ds list-id)
@@ -36,3 +37,8 @@
       (pipe/then     (fn [_]
                        (item-svc/delete! ds item-id)
                        {:ok true}))))
+
+(m/=> add-item!    [:=> [:cat :any pos-int? pos-int? :string]          pipe/Result])
+(m/=> update-item! [:=> [:cat :any pos-int? pos-int? pos-int? :string] pipe/Result])
+(m/=> toggle-item! [:=> [:cat :any pos-int? pos-int? pos-int?]         pipe/Result])
+(m/=> delete-item! [:=> [:cat :any pos-int? pos-int? pos-int?]         pipe/Result])

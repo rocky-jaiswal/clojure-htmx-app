@@ -1,12 +1,10 @@
 (ns htmx-app.services.todo-item
   (:require [htmx-app.repository.todo-item :as repo]
-            [clojure.string                :as str]))
+            [htmx-app.schemas              :as schemas]
+            [htmx-app.validation           :as validation]))
 
 (defn validate-title [title]
-  (cond
-    (str/blank? title)     "Title cannot be blank"
-    (> (count title) 200)  "Title must be 200 characters or less"
-    :else nil))
+  (validation/first-error schemas/title-schema title))
 
 (defn find-all-by-list [ds list-id]
   (repo/find-all-by-list ds list-id))

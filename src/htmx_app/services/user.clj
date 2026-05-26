@@ -1,6 +1,11 @@
 (ns htmx-app.services.user
   (:require [htmx-app.repository.user :as repo]
+            [htmx-app.schemas         :as schemas]
+            [htmx-app.validation      :as validation]
             [buddy.hashers            :as hashers]))
+
+(defn validate-registration [params]
+  (validation/first-error schemas/registration-schema params))
 
 (defn find-by-email [ds email]
   (repo/find-by-email ds email))

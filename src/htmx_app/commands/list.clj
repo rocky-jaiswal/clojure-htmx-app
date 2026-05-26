@@ -1,7 +1,8 @@
 (ns htmx-app.commands.list
   (:require [htmx-app.services.todo-list :as list-svc]
             [htmx-app.services.todo-item :as item-svc]
-            [htmx-app.commands.pipeline  :as pipe]))
+            [htmx-app.commands.pipeline  :as pipe]
+            [malli.core                  :as m]))
 
 (defn get-lists [ds user-id]
   {:ok (list-svc/find-all-by-user ds user-id)})
@@ -33,3 +34,9 @@
       (pipe/then     (fn [_]
                        (list-svc/delete! ds list-id)
                        {:ok true}))))
+
+(m/=> get-lists    [:=> [:cat :any pos-int?]                  pipe/Result])
+(m/=> get-list     [:=> [:cat :any pos-int? pos-int?]         pipe/Result])
+(m/=> create-list! [:=> [:cat :any pos-int? :string]          pipe/Result])
+(m/=> update-list! [:=> [:cat :any pos-int? pos-int? :string] pipe/Result])
+(m/=> delete-list! [:=> [:cat :any pos-int? pos-int?]         pipe/Result])

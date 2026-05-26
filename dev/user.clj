@@ -3,15 +3,18 @@
                                 :unused-namespace    {:level :off}}}}
   (:require [integrant.repl               :refer [go halt reset reset-all set-prep!]]
             [integrant.repl.state         :refer [system]]
+            [clojure.string               :as str]
             [clojure.tools.namespace.repl :refer [set-refresh-dirs]]))
 
 (set-refresh-dirs "src" "dev" "resources")
 
 (set-prep!
   (fn []
-    ;; Require core first — it pulls in db.core, db.migrations, and all ig/init-key methods
     (require 'htmx-app.core)
-    ((requiring-resolve 'htmx-app.config/system-config) :dev)))
+    (let [cfg ((requiring-resolve 'htmx-app.config/system-config) :dev)]
+      ((requiring-resolve 'malli.instrument/instrument!)
+       {:ns-filter #(str/starts-with? (str %) "htmx-app.commands")})
+      cfg)))
 
 ;; (go)       — start system
 ;; (halt)     — stop system
