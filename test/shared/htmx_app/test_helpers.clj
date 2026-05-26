@@ -18,7 +18,7 @@
 
 (defn clean-db! []
   (jdbc/execute! @test-ds
-    ["TRUNCATE todo_items, todo_lists, sessions, users RESTART IDENTITY CASCADE"]))
+                 ["TRUNCATE todo_items, todo_lists, sessions, users RESTART IDENTITY CASCADE"]))
 
 (defn db-fixture [f]
   (clean-db!)

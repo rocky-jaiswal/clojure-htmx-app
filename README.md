@@ -1,6 +1,6 @@
-# Clojure Web App — Kit + Postgres + htmx + Alpine.js
+# Clojure Web App — Integrant + Postgres + htmx + Alpine.js
 
-A full-stack Clojure web application using Kit framework, Postgres (via Docker Compose), htmx, Alpine.js, and Tailwind CSS. Designed for a developer-friendly local experience with minimal setup beyond Docker and a JVM. in production the whole app can run with a single command.
+A full-stack Clojure web application using Integrant, Reitit, Postgres (via Docker Compose), htmx, Alpine.js, and Tailwind CSS. The app runs locally against a Dockerised DB — no JVM inside Docker during development.
 
 ---
 
@@ -8,7 +8,7 @@ A full-stack Clojure web application using Kit framework, Postgres (via Docker C
 
 | Layer | Technology |
 |---|---|
-| Framework | Kit (Integrant + Reitit) |
+| Framework | Integrant + Reitit |
 | Language | Clojure (JVM 21+) |
 | Database | PostgreSQL 16 |
 | Migrations | Migratus |
@@ -31,8 +31,25 @@ A full-stack Clojure web application using Kit framework, Postgres (via Docker C
 ### Prerequisites
 
 - JDK 21+ (`sudo apt install openjdk-21-jdk`)
-- Clojure CLI (`clojure` / `clj`) — install via [linux-install.sh](https://clojure.org/guides/install_clojure)
-- Docker (for the database only)
+- Clojure CLI (`clojure` / `clj`) — install via [clojure.org](https://clojure.org/guides/install_clojure)
+- Docker (database only — the app runs on the host JVM)
+
+### First-time setup
+
+Copy the env template and fill in values:
+```bash
+cp .env.example .env
+```
+
+Required variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | JDBC URL for the app DB |
+| `SESSION_SECRET` | Cookie signing key — change in production |
+| `PORT` | HTTP port (default `3000`) |
+| `LOG_LEVEL` | Timbre log level: `debug`, `info`, `warn`, `error` (default `info`) |
+| `DB_POOL_SIZE` | HikariCP max pool size (default `10`) |
 
 ### Starting the dev environment
 
@@ -41,15 +58,16 @@ A full-stack Clojure web application using Kit framework, Postgres (via Docker C
 docker compose up db -d
 ```
 
-**2. Set environment variables (fish shell)**
-```fish
-set -x DATABASE_URL "jdbc:postgresql://localhost:5432/htmx_app?user=htmx_app&password=htmx_app"
-set -x SESSION_SECRET "9c15b34faaca7b45fac8e4fdd24e80c9"
+**2. Export env vars** (source your `.env` or export manually)
+```bash
+export DATABASE_URL="jdbc:postgresql://localhost:5432/htmx_app?user=htmx_app&password=htmx_app"
+export SESSION_SECRET="dev-secret-change-in-prod"
 ```
 
 **3. Start the REPL**
 ```bash
-clj -M:dev
+make repl
+# or: clj -M:dev -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
 ```
 
 **4. Start the system at the REPL prompt**
@@ -59,12 +77,15 @@ clj -M:dev
 
 App is now running at `http://localhost:3000`. Migrations run automatically on startup.
 
+> **Important:** Always start the REPL from the terminal (`make repl` or `clj -M:dev`).
+> Do not use Calva's Jack-In for this project — it fires before the namespace is ready and hangs.
+
 ### Code changes
 
 ```clojure
-(reset)   ; reload changed namespaces and restart the system (~2-4s)
-(halt)    ; stop the system
-(go)      ; start the system
+(reset)    ; reload changed namespaces and restart the system (~2-4s)
+(halt)     ; stop the system
+(go)       ; start the system
 ```
 
 ### Reset the database
@@ -74,30 +95,47 @@ docker compose down -v   # wipe the DB volume
 docker compose up db -d  # fresh DB
 ```
 
-Migrations will re-run on the next `(go)`.
+Migrations re-run automatically on the next `(go)`.
 
-## Summary: Commands Cheat Sheet
+---
+
+## Commands Cheat Sheet
+
+### Make targets
 
 ```bash
-# DB (only)
-docker compose up db
+make repl             # start nREPL server (CIDER-compatible)
+make test-unit        # run unit tests (no DB needed)
+make test-integration # run integration tests (requires Docker DB on port 5433)
+make test             # run all test suites
+make lint             # clj-kondo static analysis
+make fmt-check        # check formatting without modifying files
+make fmt              # fix formatting in src/ and test/
+make build            # build production uberjar
+```
 
-# Dev
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d      # Start
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down        # Stop
-docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f app # Logs
+### Database
 
-# Test
-docker compose -f docker-compose.test.yml up -d     # Start test DB
-clojure -M:test -m kaocha.runner                    # Run tests
-docker compose -f docker-compose.test.yml down      # Teardown
+```bash
+docker compose up db -d          # start dev DB (port 5432)
+docker compose down -v           # wipe dev DB volume
+docker compose -f docker-compose.test.yml up -d    # start integration test DB (port 5433)
+docker compose -f docker-compose.test.yml down -v  # teardown test DB
+```
 
-# Build
-clojure -T:build uber                               # Build uberjar
+### Tests (direct)
 
-# Production
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d     # Start prod
-docker compose -f docker-compose.yml -f docker-compose.prod.yml down       # Stop prod
+```bash
+clj -M:test unit         # unit tests only — fast, no DB, uses with-redefs
+clj -M:test integration  # integration tests — requires test DB on port 5433
+clj -M:test              # all suites
+```
+
+### Build and run
+
+```bash
+clj -T:build uber                          # build target/app.jar
+java -jar target/app.jar                   # run production uberjar
 ```
 
 ---

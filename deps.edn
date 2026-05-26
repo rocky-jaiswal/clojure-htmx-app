@@ -54,6 +54,16 @@
    :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
    :main-opts   ["-m" "kaocha.runner"]}
 
+  ;; Linting
+  :lint
+  {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2024.11.14"}}
+   :main-opts  ["-m" "clj-kondo.main" "--lint" "src" "test"]}
+
+  ;; Formatting
+  :fmt
+  {:extra-deps {dev.weavejester/cljfmt {:mvn/version "0.13.0"}}
+   :main-opts  ["-m" "cljfmt.main"]}
+
   ;; Production uberjar build
   :build
   {:deps    {io.github.clojure/tools.build {:mvn/version "0.10.5"}}

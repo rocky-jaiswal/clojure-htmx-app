@@ -11,9 +11,9 @@
 
 (defn register [{:keys [params datasource]}]
   (let [result (auth-cmd/register! datasource
-                 {:email            (:email params)
-                  :password         (:password params)
-                  :confirm-password (:confirm-password params)})]
+                                   {:email            (:email params)
+                                    :password         (:password params)
+                                    :confirm-password (:confirm-password params)})]
     (if-let [error (:error result)]
       {:status  200
        :headers {"Content-Type" "text/html; charset=utf-8"}
@@ -28,8 +28,8 @@
 
 (defn login [{:keys [params datasource session]}]
   (let [result (auth-cmd/login datasource
-                 {:email    (:email params)
-                  :password (:password params)})]
+                               {:email    (:email params)
+                                :password (:password params)})]
     (if-let [error (:error result)]
       {:status  200
        :headers {"Content-Type" "text/html; charset=utf-8"}

@@ -1,11 +1,12 @@
 (ns htmx-app.commands.auth-test
   (:require [clojure.test           :refer [deftest is testing]]
+            [buddy.hashers          :as hashers]
             [htmx-app.commands.auth :as cmd]
             [htmx-app.services.user :as user-svc]))
 
 (def ^:private existing-user
   {:users/id 1 :users/email "taken@example.com" :users/role "user"
-   :users/password (buddy.hashers/derive "correct-pw")})
+   :users/password (hashers/derive "correct-pw")})
 
 (deftest register!
   (testing "mismatched passwords"
@@ -35,8 +36,8 @@
   (testing "successful registration returns normalized user"
     (with-redefs [user-svc/find-by-email (fn [_ _] nil)
                   user-svc/create!       (fn [_ _] {:users/id 2
-                                                     :users/email "new@example.com"
-                                                     :users/role "user"})]
+                                                    :users/email "new@example.com"
+                                                    :users/role "user"})]
       (let [result (cmd/register! nil {:email "new@example.com"
                                        :password "pass1234"
                                        :confirm-password "pass1234"})]

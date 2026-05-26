@@ -22,17 +22,17 @@
   [{:keys [title csrf-token identity]} & content]
   (str doctype
        (h/html
-         [:html {:lang "en"}
-          (head (or title "htmx-app"))
-          [:body {:class "bg-gray-50 text-gray-900"}
-           (csrf-script csrf-token)
-           [:nav {:class "bg-white shadow px-6 py-3 flex gap-4 items-center"}
-            [:a {:href "/" :class "font-semibold"} "Home"]
-            (if identity
-              [:div {:class "flex gap-4 ml-auto items-center"}
-               [:span {:class "text-sm text-gray-500"} (:email identity)]
-               [:form {:method "POST" :action "/logout"}
-                [:button {:type "submit" :class "text-sm text-red-500"} "Logout"]]]
-              [:a {:href "/login" :class "ml-auto text-sm text-gray-600"} "Login"])]
-           [:main {:class "max-w-4xl mx-auto px-4 py-8"}
-            content]]])))
+        [:html {:lang "en"}
+         (head (or title "htmx-app"))
+         [:body {:class "bg-gray-50 text-gray-900"}
+          (csrf-script csrf-token)
+          [:nav {:class "bg-white shadow px-6 py-3 flex gap-4 items-center"}
+           [:a {:href "/" :class "font-semibold"} "Home"]
+           (if identity
+             [:div {:class "flex gap-4 ml-auto items-center"}
+              [:span {:class "text-sm text-gray-500"} (:email identity)]
+              [:form {:method "POST" :action "/logout"}
+               [:button {:type "submit" :class "text-sm text-red-500"} "Logout"]]]
+             [:a {:href "/login" :class "ml-auto text-sm text-gray-600"} "Login"])]
+          [:main {:class "max-w-4xl mx-auto px-4 py-8"}
+           content]]])))

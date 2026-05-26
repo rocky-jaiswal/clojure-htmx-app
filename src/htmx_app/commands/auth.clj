@@ -5,8 +5,10 @@
 (defn register! [ds {:keys [email password confirm-password]}]
   (cond
     (str/blank? email)               {:error "Email is required"}
+    (> (count email) 254)            {:error "Email must be 254 characters or less"}
     (str/blank? password)            {:error "Password is required"}
     (< (count password) 8)           {:error "Password must be at least 8 characters"}
+    (> (count password) 72)          {:error "Password must be 72 characters or less"}
     (not= password confirm-password) {:error "Passwords do not match"}
     (user-service/find-by-email ds email) {:error "Email already registered"}
     :else (let [user (user-service/create! ds {:email email :password password})]

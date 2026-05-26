@@ -9,5 +9,6 @@
       (log/info {:method  (name (:request-method request))
                  :uri     (:uri request)
                  :status  (:status response)
-                 :elapsed elapsed})
+                 :elapsed elapsed
+                 :user-id (get-in request [:identity :id])})
       response)))

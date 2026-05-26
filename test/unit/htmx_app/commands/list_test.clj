@@ -1,6 +1,6 @@
-(ns htmx-app.commands.todo-test
-  (:require [clojure.test           :refer [deftest is testing]]
-            [htmx-app.commands.todo :as cmd]
+(ns htmx-app.commands.list-test
+  (:require [clojure.test                :refer [deftest is testing]]
+            [htmx-app.commands.list      :as cmd]
             [htmx-app.services.todo-list :as list-svc]
             [htmx-app.services.todo-item :as item-svc]))
 
@@ -32,9 +32,9 @@
       (is (= :forbidden (:error (cmd/get-list nil 10 other-user-id))))))
 
   (testing "returns list and items for the owner"
-    (with-redefs [list-svc/find-by-id        (fn [_ _] sample-list)
-                  list-svc/owned-by?          (fn [_ _] true)
-                  item-svc/find-all-by-list   (fn [_ _] [sample-item])]
+    (with-redefs [list-svc/find-by-id      (fn [_ _] sample-list)
+                  list-svc/owned-by?        (fn [_ _] true)
+                  item-svc/find-all-by-list (fn [_ _] [sample-item])]
       (let [result (cmd/get-list nil 10 user-id)]
         (is (= sample-list (get-in result [:ok :list])))
         (is (= [sample-item] (get-in result [:ok :items])))))))
@@ -54,34 +54,3 @@
                   list-svc/owned-by?  (fn [_ _] true)
                   list-svc/delete!    (fn [_ _] nil)]
       (is (true? (:ok (cmd/delete-list! nil 10 user-id)))))))
-
-(deftest add-item!
-  (testing "blank title returns error"
-    (with-redefs [list-svc/find-by-id (fn [_ _] sample-list)
-                  list-svc/owned-by?  (fn [_ _] true)]
-      (is (some? (:error (cmd/add-item! nil 10 user-id ""))))))
-
-  (testing "returns forbidden for wrong user"
-    (with-redefs [list-svc/find-by-id (fn [_ _] sample-list)
-                  list-svc/owned-by?  (fn [_ _] false)]
-      (is (= :forbidden (:error (cmd/add-item! nil 10 other-user-id "Buy milk"))))))
-
-  (testing "creates item for owner"
-    (with-redefs [list-svc/find-by-id (fn [_ _] sample-list)
-                  list-svc/owned-by?  (fn [_ _] true)
-                  item-svc/create!    (fn [_ _ _] sample-item)]
-      (is (= sample-item (:ok (cmd/add-item! nil 10 user-id "Buy milk")))))))
-
-(deftest toggle-item!
-  (testing "returns forbidden for wrong user"
-    (with-redefs [list-svc/find-by-id (fn [_ _] sample-list)
-                  list-svc/owned-by?  (fn [_ _] false)
-                  item-svc/find-by-id (fn [_ _] sample-item)]
-      (is (= :forbidden (:error (cmd/toggle-item! nil 10 20 other-user-id))))))
-
-  (testing "toggles item for owner"
-    (with-redefs [list-svc/find-by-id  (fn [_ _] sample-list)
-                  list-svc/owned-by?   (fn [_ _] true)
-                  item-svc/find-by-id  (fn [_ _] sample-item)
-                  item-svc/toggle-done! (fn [_ _] (assoc sample-item :todo_items/done true))]
-      (is (true? (get-in (cmd/toggle-item! nil 10 20 user-id) [:ok :todo_items/done]))))))

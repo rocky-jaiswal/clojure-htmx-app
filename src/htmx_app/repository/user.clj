@@ -9,5 +9,5 @@
 
 (defn create! [ds {:keys [email password role]}]
   (jdbc/execute-one! ds
-    ["INSERT INTO users (email, password, role) VALUES (?, ?, ?) RETURNING *"
-     email password (or role "user")]))
+                     ["INSERT INTO users (email, password, role) VALUES (?, ?, ?) RETURNING *"
+                      email password (or role "user")]))

@@ -19,21 +19,25 @@
                 :class      "text-sm text-red-500 hover:underline"} "Delete"]]]))
 
 (defn list-edit-form [lst]
-  (let [id (:todo_lists/id lst)]
+  (let [id    (:todo_lists/id lst)
+        error (:error lst)]
     [:li {:id (str "list-" id)
-          :class "flex items-center gap-2 p-4 border rounded bg-white"}
-     [:form {:hx-put    (str "/lists/" id)
-             :hx-target (str "#list-" id)
-             :hx-swap   "outerHTML"
-             :class     "flex gap-2 flex-1"}
-      [:input {:type "text" :name "name" :value (:todo_lists/name lst)
-               :required true :autofocus true
-               :class "flex-1 border rounded px-2 py-1 text-sm"}]
-      [:button {:type "submit" :class "text-sm text-green-600 hover:underline"} "Save"]]
-     [:button {:hx-get    (str "/lists/" id "/row")
-               :hx-target (str "#list-" id)
-               :hx-swap   "outerHTML"
-               :class     "text-sm text-gray-400 hover:underline"} "Cancel"]]))
+          :class "flex flex-col gap-1 p-4 border rounded bg-white"}
+     [:div {:class "flex items-center gap-2"}
+      [:form {:hx-put    (str "/lists/" id)
+              :hx-target (str "#list-" id)
+              :hx-swap   "outerHTML"
+              :class     "flex gap-2 flex-1"}
+       [:input {:type "text" :name "name" :value (:todo_lists/name lst)
+                :required true :autofocus true
+                :class "flex-1 border rounded px-2 py-1 text-sm"}]
+       [:button {:type "submit" :class "text-sm text-green-600 hover:underline"} "Save"]]
+      [:button {:hx-get    (str "/lists/" id "/row")
+                :hx-target (str "#list-" id)
+                :hx-swap   "outerHTML"
+                :class     "text-sm text-gray-400 hover:underline"} "Cancel"]]
+     (when error
+       [:p {:class "text-red-500 text-xs"} error])]))
 
 (defn item-row [list-id item]
   (let [id   (:todo_items/id item)
@@ -60,18 +64,22 @@
                 :class      "text-xs text-red-500 hover:underline"} "Delete"]]]))
 
 (defn item-edit-form [list-id item]
-  (let [id (:todo_items/id item)]
+  (let [id    (:todo_items/id item)
+        error (:error item)]
     [:li {:id (str "item-" id)
-          :class "flex items-center gap-2 p-3 border rounded bg-white"}
-     [:form {:hx-put    (str "/lists/" list-id "/items/" id)
-             :hx-target (str "#item-" id)
-             :hx-swap   "outerHTML"
-             :class     "flex gap-2 flex-1"}
-      [:input {:type "text" :name "title" :value (:todo_items/title item)
-               :required true :autofocus true
-               :class "flex-1 border rounded px-2 py-1 text-sm"}]
-      [:button {:type "submit" :class "text-xs text-green-600 hover:underline"} "Save"]]
-     [:button {:hx-get    (str "/lists/" list-id "/items/" id "/row")
-               :hx-target (str "#item-" id)
-               :hx-swap   "outerHTML"
-               :class     "text-xs text-gray-400 hover:underline"} "Cancel"]]))
+          :class "flex flex-col gap-1 p-3 border rounded bg-white"}
+     [:div {:class "flex items-center gap-2"}
+      [:form {:hx-put    (str "/lists/" list-id "/items/" id)
+              :hx-target (str "#item-" id)
+              :hx-swap   "outerHTML"
+              :class     "flex gap-2 flex-1"}
+       [:input {:type "text" :name "title" :value (:todo_items/title item)
+                :required true :autofocus true
+                :class "flex-1 border rounded px-2 py-1 text-sm"}]
+       [:button {:type "submit" :class "text-xs text-green-600 hover:underline"} "Save"]]
+      [:button {:hx-get    (str "/lists/" list-id "/items/" id "/row")
+                :hx-target (str "#item-" id)
+                :hx-swap   "outerHTML"
+                :class     "text-xs text-gray-400 hover:underline"} "Cancel"]]
+     (when error
+       [:p {:class "text-red-500 text-xs"} error])]))
