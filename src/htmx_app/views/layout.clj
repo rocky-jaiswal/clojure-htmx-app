@@ -31,7 +31,6 @@
             (if identity
               [:div {:class "flex gap-4 ml-auto items-center"}
                [:span {:class "text-sm text-gray-500"} (:email identity)]
-               [:a {:href "/admin" :class "text-gray-600 text-sm"} "Admin"]
                [:form {:method "POST" :action "/logout"}
                 [:button {:type "submit" :class "text-sm text-red-500"} "Logout"]]]
               [:a {:href "/login" :class "ml-auto text-sm text-gray-600"} "Login"])]

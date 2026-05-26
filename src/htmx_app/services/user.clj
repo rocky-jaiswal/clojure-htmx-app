@@ -1,17 +1,17 @@
 (ns htmx-app.services.user
-  (:require [next.jdbc :as jdbc]
-            [buddy.hashers :as hashers]))
+  (:require [htmx-app.repository.user :as repo]
+            [buddy.hashers            :as hashers]))
 
 (defn find-by-email [ds email]
-  (jdbc/execute-one! ds ["SELECT * FROM users WHERE email = ?" email]))
+  (repo/find-by-email ds email))
 
 (defn find-all [ds]
-  (jdbc/execute! ds ["SELECT id, email, role, created_at FROM users ORDER BY created_at DESC"]))
+  (repo/find-all ds))
 
 (defn verify-password [user raw-password]
   (hashers/check raw-password (:users/password user)))
 
-(defn create-user! [ds {:keys [email password role]}]
-  (jdbc/execute-one! ds
-    ["INSERT INTO users (email, password, role) VALUES (?, ?, ?) RETURNING *"
-     email (hashers/derive password) (or role "user")]))
+(defn create! [ds {:keys [email password role]}]
+  (repo/create! ds {:email    email
+                    :password (hashers/derive password)
+                    :role     (or role "user")}))

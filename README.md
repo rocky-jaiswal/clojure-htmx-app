@@ -79,6 +79,9 @@ Migrations will re-run on the next `(go)`.
 ## Summary: Commands Cheat Sheet
 
 ```bash
+# DB (only)
+docker compose up db
+
 # Dev
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d      # Start
 docker compose -f docker-compose.yml -f docker-compose.dev.yml down        # Stop

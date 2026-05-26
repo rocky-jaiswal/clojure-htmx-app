@@ -42,7 +42,7 @@
  :aliases
  {;; Dev REPL with extra paths
   :dev
-  {:extra-paths ["dev" "test"]
+  {:extra-paths ["dev" "test/shared"]
    :extra-deps  {integrant/repl              {:mvn/version "0.5.0"}
                  org.clojure/tools.namespace {:mvn/version "1.5.0"}
                  nrepl/nrepl                 {:mvn/version "1.3.0"}
@@ -50,8 +50,9 @@
 
   ;; Test runner
   :test
-  {:extra-paths ["test"]
-   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
+  {:extra-paths ["test/unit" "test/integration" "test/shared"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+   :main-opts   ["-m" "kaocha.runner"]}
 
   ;; Production uberjar build
   :build
