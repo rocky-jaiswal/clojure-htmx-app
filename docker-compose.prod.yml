@@ -1,0 +1,18 @@
+services:
+  db:
+    restart: always
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: java -jar app.jar

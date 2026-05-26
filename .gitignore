@@ -1,0 +1,9 @@
+.env
+target/
+.cpcache/
+.clj-kondo/
+.lsp/
+.nrepl-port
+*.jar
+.calva/
+.vscode/

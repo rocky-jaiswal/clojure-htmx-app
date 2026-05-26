@@ -1,0 +1,59 @@
+{:paths ["src" "resources"]
+
+ :deps
+ {org.clojure/clojure              {:mvn/version "1.12.5"}
+
+  ;; Web
+  metosin/reitit                   {:mvn/version "0.10.1"}
+  ring/ring-core                   {:mvn/version "1.15.3"}
+  ring/ring-defaults               {:mvn/version "0.7.0"}
+  ring/ring-anti-forgery           {:mvn/version "1.4.0"}
+  jdbc-ring-session/jdbc-ring-session {:mvn/version "1.5.5"}
+
+  ;; Server
+  ring/ring-jetty-adapter          {:mvn/version "1.15.3"}
+
+  ;; DB
+  org.postgresql/postgresql        {:mvn/version "42.7.4"}
+  com.github.seancorfield/next.jdbc {:mvn/version "1.3.939"}
+  com.zaxxer/HikariCP              {:mvn/version "5.1.0"}
+  migratus/migratus                {:mvn/version "1.5.3"}
+
+  ;; Validation
+  metosin/malli                    {:mvn/version "0.20.1"}
+
+  ;; Auth
+  buddy/buddy-hashers              {:mvn/version "2.0.167"}
+  buddy/buddy-auth                 {:mvn/version "3.0.323"}
+
+  ;; Config
+  aero/aero                        {:mvn/version "1.1.6"}
+
+  ;; Templating
+  hiccup/hiccup                    {:mvn/version "2.0.0-RC4"}
+
+  ;; Logging
+  com.taoensso/timbre              {:mvn/version "6.6.1"}
+  com.fzakaria/slf4j-timbre        {:mvn/version "0.4.1"}
+
+  ;; System lifecycle
+  integrant/integrant              {:mvn/version "1.0.0"}}
+
+ :aliases
+ {;; Dev REPL with extra paths
+  :dev
+  {:extra-paths ["dev" "test"]
+   :extra-deps  {integrant/repl              {:mvn/version "0.5.0"}
+                 org.clojure/tools.namespace {:mvn/version "1.5.0"}
+                 nrepl/nrepl                 {:mvn/version "1.3.0"}
+                 cider/cider-nrepl           {:mvn/version "0.58.0"}}}
+
+  ;; Test runner
+  :test
+  {:extra-paths ["test"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
+
+  ;; Production uberjar build
+  :build
+  {:deps    {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
+   :ns-default build}}}

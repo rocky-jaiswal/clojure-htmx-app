@@ -1,0 +1,10 @@
+{:app
+ {:port #or [#env PORT 3000]}
+
+ :database
+ {:jdbc-url  #or [#env DATABASE_URL
+                  "jdbc:postgresql://localhost:5432/htmx_app?user=htmx_app&password=secret"]
+  :pool-size #or [#env DB_POOL_SIZE 10]}
+
+ :session
+ {:secret #or [#env SESSION_SECRET "dev-session-secret-change-in-prod"]}}

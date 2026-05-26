@@ -1,0 +1,24 @@
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ./src:/app/src
+      - ./resources:/app/resources
+      - ./dev:/app/dev
+      - ~/.m2:/root/.m2
+    ports:
+      - "3000:3000"
+      - "7000:7000"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}?user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}
+      - SESSION_SECRET=${SESSION_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    command: clojure -M:dev -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]" --port 7000 --bind 0.0.0.0
