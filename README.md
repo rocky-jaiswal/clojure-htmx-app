@@ -1,8 +1,8 @@
 # Clojure Web App with HTMX
 
-## Stack - Integrant + Postgres + htmx + Alpine.js
+## Stack - Reitit + Integrant + HTMX + Alpine.js + Postgres
 
-A full-stack Clojure web application using Integrant, Reitit, Postgres (via Docker Compose), htmx, Alpine.js, and Tailwind CSS. The app runs locally against a Dockerised DB — no JVM inside Docker during development.
+A full-stack Clojure web application using Integrant, Reitit, Postgres (via Docker Compose), HTMX, Alpine.js, and Tailwind CSS. The app runs locally against a Dockerised DB — no JVM inside Docker during development.
 
 ---
 
