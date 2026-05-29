@@ -1,10 +1,13 @@
 {:app
- {:port #or [#env PORT 3000]}
+ {:port #or [#env PORT #prop PORT 3000]}
 
  :database
  {:jdbc-url  #or [#env DATABASE_URL
+                  #prop DATABASE_URL
                   "jdbc:postgresql://localhost:5432/htmx_app?user=htmx_app&password=secret"]
-  :pool-size #or [#env DB_POOL_SIZE 10]}
+  :pool-size #or [#env DB_POOL_SIZE #prop DB_POOL_SIZE 10]}
 
- :session
- {:secret #or [#env SESSION_SECRET "dev-session-secret-change-in-prod"]}}
+ :jwt
+ {:private-key-path #or [#env PRIVATE_KEY_PATH #prop PRIVATE_KEY_PATH "keys/private.pem"]
+  :public-key-path  #or [#env PUBLIC_KEY_PATH  #prop PUBLIC_KEY_PATH  "keys/public.pem"]
+  :passphrase       #or [#env PRIVATE_KEY_PASSPHRASE #prop PRIVATE_KEY_PASSPHRASE "dev-passphrase"]}}

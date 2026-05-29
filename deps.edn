@@ -8,7 +8,6 @@
   ring/ring-core                   {:mvn/version "1.15.3"}
   ring/ring-defaults               {:mvn/version "0.7.0"}
   ring/ring-anti-forgery           {:mvn/version "1.4.0"}
-  jdbc-ring-session/jdbc-ring-session {:mvn/version "1.5.5"}
 
   ;; Server
   ring/ring-jetty-adapter          {:mvn/version "1.15.3"}
@@ -24,7 +23,7 @@
 
   ;; Auth
   buddy/buddy-hashers              {:mvn/version "2.0.167"}
-  buddy/buddy-auth                 {:mvn/version "3.0.323"}
+  buddy/buddy-sign                 {:mvn/version "3.6.1-359"}
 
   ;; Config
   aero/aero                        {:mvn/version "1.1.6"}

@@ -1,6 +1,9 @@
-.PHONY: repl test test-unit test-integration lint fmt fmt-check build
+.PHONY: repl nrepl test test-unit test-integration lint fmt fmt-check build
 
 repl:
+	clj -M:dev
+
+nrepl:
 	clj -M:dev -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
 
 test-unit:

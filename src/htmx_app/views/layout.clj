@@ -32,6 +32,7 @@
              [:div {:class "flex gap-4 ml-auto items-center"}
               [:span {:class "text-sm text-gray-500"} (:email identity)]
               [:form {:method "POST" :action "/logout"}
+               [:input {:type "hidden" :name "__anti-forgery-token" :value csrf-token}]
                [:button {:type "submit" :class "text-sm text-red-500"} "Logout"]]]
              [:a {:href "/login" :class "ml-auto text-sm text-gray-600"} "Login"])]
           [:main {:class "max-w-4xl mx-auto px-4 py-8"}

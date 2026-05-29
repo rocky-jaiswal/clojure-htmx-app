@@ -9,10 +9,10 @@
             [htmx-app.middleware.core   :as middleware])
   (:gen-class))
 
-(defmethod ig/init-key :htmx-app.core/jetty [_ {:keys [port datasource dev?]}]
+(defmethod ig/init-key :htmx-app.core/jetty [_ {:keys [port datasource jwt dev?]}]
   (log/info "Starting HTTP server on port" port)
   (let [handler (-> (routes/app-routes datasource)
-                    ((middleware/make-middleware-stack datasource {:dev? dev?})))
+                    ((middleware/make-middleware-stack datasource jwt {:dev? dev?})))
         server  (jetty/run-jetty handler {:port  port
                                           :join? false})]
     (doto server
